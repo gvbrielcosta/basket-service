@@ -6,8 +6,11 @@ import costa.gabriel.ecommerce.basketservice.controller.request.PaymentRequest;
 import costa.gabriel.ecommerce.basketservice.entity.Basket;
 import costa.gabriel.ecommerce.basketservice.entity.Product;
 import costa.gabriel.ecommerce.basketservice.entity.Status;
+import costa.gabriel.ecommerce.basketservice.exceptions.BusinessException;
+import costa.gabriel.ecommerce.basketservice.exceptions.DataNotFoundException;
 import costa.gabriel.ecommerce.basketservice.repository.BasketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,19 +27,10 @@ public class BasketService {
 
         basketRepository.findByClientAndStatus(request.client(), Status.OPEN)
                 .ifPresent(basket -> {
-                    throw new IllegalArgumentException("Basket already exists");
+                    throw new BusinessException("Basket already exists for this client");
                 });
 
-        List<Product> products = new ArrayList<>();
-        request.products().forEach(productRequest -> {
-            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
-            products.add(Product.builder()
-                    .id(platziProductResponse.id())
-                    .title(platziProductResponse.title())
-                    .price(platziProductResponse.price())
-                    .quantity(productRequest.quantity())
-                    .build());
-        });
+        List<Product> products = getProducts(request);
 
         Basket basket = Basket.builder()
                 .client(request.client())
@@ -49,21 +43,12 @@ public class BasketService {
 
     public Basket getBasket(String id) {
         return basketRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Basket not found"));
+                .orElseThrow(() -> new DataNotFoundException("Basket not found"));
     }
 
     public Basket updateBasket(String id, BasketRequest request) {
         Basket savedBasket = getBasket(id);
-        List<Product> products = new ArrayList<>();
-        request.products().forEach(productRequest -> {
-            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
-            products.add(Product.builder()
-                    .id(platziProductResponse.id())
-                    .title(platziProductResponse.title())
-                    .price(platziProductResponse.price())
-                    .quantity(productRequest.quantity())
-                    .build());
-        });
+        List<Product> products = getProducts(request);
 
         savedBasket.setProducts(products);
         savedBasket.calculateTotalPrice();
@@ -79,5 +64,19 @@ public class BasketService {
 
     public void deleteBasket(String id) {
         basketRepository.delete(getBasket(id));
+    }
+
+    private List<Product> getProducts(BasketRequest request) {
+        List<Product> products = new ArrayList<>();
+        request.products().forEach(productRequest -> {
+            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
+            products.add(Product.builder()
+                    .id(platziProductResponse.id())
+                    .title(platziProductResponse.title())
+                    .price(platziProductResponse.price())
+                    .quantity(productRequest.quantity())
+                    .build());
+        });
+        return products;
     }
 }
