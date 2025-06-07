@@ -2,17 +2,16 @@ package costa.gabriel.ecommerce.basketservice.service;
 
 import costa.gabriel.ecommerce.basketservice.client.response.PlatziProductResponse;
 import costa.gabriel.ecommerce.basketservice.controller.request.BasketRequest;
+import costa.gabriel.ecommerce.basketservice.controller.request.PaymentRequest;
 import costa.gabriel.ecommerce.basketservice.entity.Basket;
 import costa.gabriel.ecommerce.basketservice.entity.Product;
 import costa.gabriel.ecommerce.basketservice.entity.Status;
 import costa.gabriel.ecommerce.basketservice.repository.BasketRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -68,6 +67,13 @@ public class BasketService {
 
         savedBasket.setProducts(products);
         savedBasket.calculateTotalPrice();
+        return basketRepository.save(savedBasket);
+    }
+
+    public Basket payBasket(String id, PaymentRequest request) {
+        Basket savedBasket = getBasket(id);
+        savedBasket.setPaymentMethod(request.getPaymentMethod());
+        savedBasket.setStatus(Status.SOLD);
         return basketRepository.save(savedBasket);
     }
 }
