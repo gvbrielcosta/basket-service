@@ -24,25 +24,6 @@ Ele permite adicionar, remover, listar e finalizar compras de produtos, integran
 - **Docker**: Containerização dos serviços para facilitar o ambiente de desenvolvimento.
 - **Docker Compose**: Orquestração dos containers Docker.
 
-## 📦 Estrutura do Projeto
-
-A estrutura do projeto segue uma arquitetura limpa, separando responsabilidades em diferentes camadas:
-
-src/
-├── main/
-│ ├── java/
-│ │ └── costa.gabriel.ecommerce.basketservice/
-│ │ ├── controller/ # Controladores REST
-│ │ ├── service/ # Lógica de negócio
-│ │ ├── repository/ # Acesso ao MongoDB
-│ │ ├── client/ # Integração com serviços externos via Feign
-│ │ ├── entity/ # Entidades do domínio
-│ │ └── exceptions/ # Tratamento de exceções
-│ └── resources/
-│ └── application.properties # Configurações da aplicação
-
-
-
 ## 🔧 Configuração e Execução
 
 ### Pré-requisitos
