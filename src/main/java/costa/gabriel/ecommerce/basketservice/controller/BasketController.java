@@ -25,4 +25,8 @@ public class BasketController {
         return ResponseEntity.status(HttpStatus.CREATED).body(basketService.createBasket(request));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Basket> updateBasket(@PathVariable String id, @RequestBody BasketRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(basketService.updateBasket(id, request));
+    }
 }

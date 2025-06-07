@@ -7,6 +7,7 @@ import costa.gabriel.ecommerce.basketservice.entity.Product;
 import costa.gabriel.ecommerce.basketservice.entity.Status;
 import costa.gabriel.ecommerce.basketservice.repository.BasketRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,7 +29,6 @@ public class BasketService {
                 });
 
         List<Product> products = new ArrayList<>();
-
         request.products().forEach(productRequest -> {
             PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
             products.add(Product.builder()
@@ -51,5 +51,23 @@ public class BasketService {
     public Basket getBasket(String id) {
         return basketRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Basket not found"));
+    }
+
+    public Basket updateBasket(String id, BasketRequest request) {
+        Basket savedBasket = getBasket(id);
+        List<Product> products = new ArrayList<>();
+        request.products().forEach(productRequest -> {
+            PlatziProductResponse platziProductResponse = productService.getProductById(productRequest.id());
+            products.add(Product.builder()
+                    .id(platziProductResponse.id())
+                    .title(platziProductResponse.title())
+                    .price(platziProductResponse.price())
+                    .quantity(productRequest.quantity())
+                    .build());
+        });
+
+        savedBasket.setProducts(products);
+        savedBasket.calculateTotalPrice();
+        return basketRepository.save(savedBasket);
     }
 }
