@@ -42,10 +42,13 @@ Ele permite adicionar, remover, listar e finalizar compras de produtos, integran
 
 2. Inicie os serviços do MongoDB e Redis:
    
-docker-compose up -d
+   ```bash
+   docker-compose up -d
+
 
 3. Execute a aplicação
-   
+
+   ```bash
    ./mvnw spring-boot:run
 
  A aplicação estará disponível em http://localhost:8080.
