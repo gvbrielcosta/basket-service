@@ -61,6 +61,13 @@ Ele permite adicionar, remover, listar e finalizar compras de produtos, integran
 - **DELETE /basket/{id}**: Remove um carrinho.
 - **POST /basket/{id}/payment**: Processa o pagamento do carrinho e altera o status para "SOLD".
 
+### 🧩 API Externa (Produto)
+
+Esses endpoints são consumidos via OpenFeign:
+
+- **GET /products**: Lista todos os produtos disponíveis.
+- **GET /products/{id}**: Retorna os detalhes de um produto específico.
+
 ## 🧠 Conceitos Aplicados
 
 - **Integração com APIs externas**: Utilização do OpenFeign para comunicação com o serviço de produtos.
