@@ -2,15 +2,11 @@ package costa.gabriel.ecommerce.basketservice.controller;
 
 import costa.gabriel.ecommerce.basketservice.controller.request.BasketRequest;
 import costa.gabriel.ecommerce.basketservice.entity.Basket;
-import costa.gabriel.ecommerce.basketservice.repository.BasketRepository;
 import costa.gabriel.ecommerce.basketservice.service.BasketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/basket")
@@ -18,6 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class BasketController {
 
     private final BasketService basketService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Basket> getBasket(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK).body(basketService.getBasket(id));
+    }
 
     @PostMapping
     public ResponseEntity<Basket> createBasket(@RequestBody BasketRequest request) {
